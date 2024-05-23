@@ -3,8 +3,10 @@ package com.online.shop.ecombackend.service;
 import com.online.shop.ecombackend.dao.UserRepository;
 import com.online.shop.ecombackend.dao.VerificationTokenRepository;
 import com.online.shop.ecombackend.dto.Login;
+import com.online.shop.ecombackend.dto.PasswordReset;
 import com.online.shop.ecombackend.dto.Registration;
 import com.online.shop.ecombackend.exception.EmailFailureException;
+import com.online.shop.ecombackend.exception.EmailNotFoundException;
 import com.online.shop.ecombackend.exception.UserException;
 import com.online.shop.ecombackend.exception.UserNotVerifiedException;
 import com.online.shop.ecombackend.model.User;
@@ -27,8 +29,8 @@ public class UserService {
     private JWTService jwtService;
     private EmailService emailService;
     private VerificationTokenRepository verificationTokenRepository;
-    private Optional<User> findUserEmail;
-    private Optional<User> findUserName;
+//    private Optional<User> findUserEmail;
+//    private Optional<User> findUserName;
 
     public UserService(UserRepository userRepository,
                        EncryptionService encryptionService,
@@ -44,8 +46,8 @@ public class UserService {
     }
 
     public User registerUser(Registration registration) throws UserException, EmailFailureException {
-        findUserEmail = userRepository.findByEmailIgnoreCase(registration.getEmail());
-        findUserName = userRepository.findByUsernameIgnoreCase(registration.getUsername());
+        Optional<User> findUserEmail = userRepository.findByEmailIgnoreCase(registration.getEmail());
+        Optional<User> findUserName = userRepository.findByUsernameIgnoreCase(registration.getUsername());
         if(findUserEmail.isPresent()
                 || findUserName.isPresent() )
         {
@@ -73,7 +75,7 @@ public class UserService {
     }
 
     public String loginUser(Login login) throws UserNotVerifiedException, EmailFailureException {
-        findUserName = userRepository.findByUsernameIgnoreCase(login.getUsername());
+        Optional<User> findUserName = userRepository.findByUsernameIgnoreCase(login.getUsername());
         if (findUserName.isPresent()) {
             User user = findUserName.get();
             if (encryptionService.verifyPassword(login.getPassword(), user.getPassword()))
@@ -111,4 +113,40 @@ public class UserService {
         return false;
     }
 
+
+    /**
+     * Sends the user a forgot password reset based on the email provided.
+     * @param email The email to send to.
+     * @throws EmailNotFoundException Thrown if there is no user with that email.
+     * @throws EmailFailureException
+     */
+    public void forgotPassword(String email) throws EmailNotFoundException, EmailFailureException {
+        Optional<User> opUser = userRepository.findByEmailIgnoreCase(email);
+        if (opUser.isPresent()) {
+            System.out.println("i am present");
+            User user = opUser.get();
+            String token = jwtService.generatePasswordResetJWT(user);
+            emailService.sendPasswordResetEmail(user, token);
+        } else {
+            System.out.println("i am not present");
+            throw new EmailNotFoundException();
+        }
+    }
+    /**
+     * Resets the users password using a given token and email.
+     * @param body The password reset information.
+     */
+    public void resetPassword(PasswordReset body) {
+        String email = jwtService.getResetPasswordEmail(body.getToken());
+        Optional<User> opUser = userRepository.findByEmailIgnoreCase(email);
+        if (opUser.isPresent()) {
+            User user = opUser.get();
+            user.setPassword(encryptionService.encryptPassword(body.getPassword()));
+            userRepository.save(user);
+        }
+    }
+
+
 }
+
+

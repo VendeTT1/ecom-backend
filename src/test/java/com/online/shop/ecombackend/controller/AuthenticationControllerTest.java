@@ -45,7 +45,11 @@ public class AuthenticationControllerTest {
         registration.setEmail("AuthenticationControllerTest$testRegister@junit.com");
         registration.setFirstname("FirstName");
         registration.setLastname("LastName");
-        registration.setPassword("Password123");
+        registration.setPassword("Password$123");
+        registration.setUsername("AuthenticationControllerTest$testRegister");
+
+
+
         // Null or blank username.
         registration.setUsername(null);
         mvc.perform(post("/auth/register")
@@ -81,7 +85,7 @@ public class AuthenticationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(registration)))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()));
-        registration.setPassword("Password123");
+        registration.setPassword("Password$123");
         // Null or blank first name.
         registration.setFirstname(null);
         mvc.perform(post("/auth/register")
@@ -112,5 +116,6 @@ public class AuthenticationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(registration)))
                 .andExpect(status().is(HttpStatus.OK.value()));
+
     }
 }

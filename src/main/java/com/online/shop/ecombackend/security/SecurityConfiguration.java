@@ -28,7 +28,10 @@ public class SecurityConfiguration {
                 .cors(AbstractHttpConfigurer::disable);
         http.addFilterBefore(jwtFilter, AuthorizationFilter.class);
         http.authorizeHttpRequests(request ->
-                        request.requestMatchers("/product", "/auth/register", "/auth/login", "/auth/verify", "/error")
+                        request.requestMatchers("/product", "/auth/register", "/auth/login", "/auth/verify",
+                                        "/auth/forgot", "/auth/reset"
+                                        , "/error"
+                                )
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated());
