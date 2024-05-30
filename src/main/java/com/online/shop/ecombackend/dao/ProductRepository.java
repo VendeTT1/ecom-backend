@@ -3,6 +3,11 @@ package com.online.shop.ecombackend.dao;
 import com.online.shop.ecombackend.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+import java.util.List;
+import java.util.Optional;
+
+public interface ProductRepository extends JpaRepository<Product, Integer> {
+    List<Product> findAll();
+
 
 }

@@ -1,7 +1,5 @@
 package com.online.shop.ecombackend.security;
 
-import com.online.shop.ecombackend.dao.UserRepository;
-import com.online.shop.ecombackend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
