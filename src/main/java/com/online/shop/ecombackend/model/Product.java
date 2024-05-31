@@ -1,6 +1,7 @@
 package com.online.shop.ecombackend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 
@@ -47,17 +48,25 @@ public class Product {
     @Column(name = "rating")
     private Float rating;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Review> reviews;
 
-    public Review[] getReviews() {
-        return reviews == null ? new Review[0] : reviews.toArray(new Review[0]);
+    public List<Review> getReviews() {
+        return reviews;
     }
 
-    public void setReviews(Review[] reviewsArray) {
-        this.reviews = reviewsArray == null ? null : Arrays.asList(reviewsArray);
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
+//    public Review[] getReviews() {
+//        return reviews == null ? new Review[0] : reviews.toArray(new Review[0]);
+//    }
+//
+//    public void setReviews(Review[] reviewsArray) {
+//        this.reviews = reviewsArray == null ? null : Arrays.asList(reviewsArray);
+//    }
 
     @Column(name = "totalreviewcount")
     private Integer totalreviewcount;

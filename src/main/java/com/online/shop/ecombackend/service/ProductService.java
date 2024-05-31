@@ -7,6 +7,8 @@ import com.online.shop.ecombackend.model.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,6 +38,10 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
+    public List<Product> getSingleProductById(int id) {
+        return productRepository.findByReviewProductId(id);
+    }
+
     public void addReviewToProduct(int productId, Review review) {
         Product product = productRepository.findById(productId).orElse(null);
         if (product != null) {
@@ -43,7 +49,9 @@ public class ProductService {
             reviewRepository.save(review);
         }
     }
-
+    public Page<Product> getProducts(Specification<Product> spec, Pageable pageable) {
+        return productRepository.findAll(spec, pageable);
+    }
 }
 
 

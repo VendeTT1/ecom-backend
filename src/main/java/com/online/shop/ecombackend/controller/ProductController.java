@@ -1,8 +1,15 @@
 package com.online.shop.ecombackend.controller;
+
+
 import com.online.shop.ecombackend.dao.ProductRepository;
+import com.online.shop.ecombackend.dto.ProductSpecification;
 import com.online.shop.ecombackend.model.Product;
 import com.online.shop.ecombackend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,7 +55,37 @@ public class ProductController {
         return productService.getProducts(page, limit);
     }
     @GetMapping("/{id}")
-    public Optional<Product> getProducts(@PathVariable("id") Integer id) {
-        return productRepository.findById(id);
+    public List<Product> getSingleProductByid(@PathVariable("id") Integer id) {
+        return productRepository.findByReviewProductId(id);
+    }
+
+
+    @GetMapping("/shop")
+    public Page<Product> getProducts(
+            @RequestParam(defaultValue = "0") int start,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) String brandname,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) Boolean isinstock,
+            @RequestParam(required = false) Double price,
+            @RequestParam(required = false) String productiondate) {
+
+        Pageable pageable = PageRequest.of(start / limit, limit);
+
+        Specification<Product> spec = Specification.where(ProductSpecification.hasBrand(brandname))
+                .and(ProductSpecification.hasCategory(category))
+                .and(ProductSpecification.hasGender(gender))
+                .and(ProductSpecification.hasPriceLessThanOrEqual(price))
+                .and(ProductSpecification.isInStock(isinstock))
+                .and(ProductSpecification.hasProductionDate(productiondate));
+
+        if (sort != null) {
+            // Add sorting logic if needed
+
+        }
+
+        return productService.getProducts(spec, pageable);
     }
 }
