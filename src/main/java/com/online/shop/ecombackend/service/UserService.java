@@ -1,11 +1,16 @@
 package com.online.shop.ecombackend.service;
 
 import com.online.shop.ecombackend.dao.UserRepository;
+import com.online.shop.ecombackend.dto.LoginBody;
 import com.online.shop.ecombackend.dto.RegistrationBody;
+import com.online.shop.ecombackend.exception.IncorrectPasswordException;
+import com.online.shop.ecombackend.exception.UserNotFoundException;
 import com.online.shop.ecombackend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -17,8 +22,7 @@ public class UserService {
     private EncryptionService encryptionService;
 
 
-    private static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$";
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
+
 
     public User registerUser(User user) {
         return userRepository.save(user);
@@ -41,4 +45,18 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User loginUser(LoginBody loginBody) {
+        Optional<User> userOpt = userRepository.findAllByEmailIgnoreCase(loginBody.getEmail());
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (encryptionService.verifyPassword(loginBody.getPassword(), user.getPassword())) {
+                return user;
+            } else {
+                throw new IncorrectPasswordException("Incorrect password");
+            }
+        }
+        else {
+            throw new UserNotFoundException("User not found with email: " + loginBody.getEmail());
+        }
+    }
 }
