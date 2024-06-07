@@ -1,23 +1,33 @@
 package com.online.shop.ecombackend.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "wishlistitem")
 public class WishlistItem {
     @Id
-    @Column(name = "id", nullable = false)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "wishlistid", nullable = false)
+    private Long wishlistid;
 
-    public long getId() {
-        return id;
+    public Long getWishlistid() {
+        return wishlistid;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setWishlistid(Long wishlistid) {
+        this.wishlistid = wishlistid;
+    }
+
+    @Column(name = "productId", nullable = false)
+    private int productId;
+
+    public int getId() {
+        return productId;
+    }
+
+    public void setId(int productId) {
+        this.productId = productId;
     }
     @Column(name = "title",nullable = false)
     private String title;
@@ -98,5 +108,17 @@ public class WishlistItem {
 
     public void setIsinwishlist(boolean isinwishlist) {
         this.isinwishlist = isinwishlist;
+    }
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

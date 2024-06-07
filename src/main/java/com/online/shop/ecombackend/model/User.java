@@ -1,5 +1,6 @@
 package com.online.shop.ecombackend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -78,8 +79,8 @@ public class User {
         this.password = password;
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<WishlistItem> userWishlist;
 
     public List<WishlistItem> getUserWishlist() {
