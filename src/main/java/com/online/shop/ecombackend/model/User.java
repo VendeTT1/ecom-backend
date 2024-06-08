@@ -90,4 +90,16 @@ public class User {
     public void setUserWishlist(List<WishlistItem> userWishlist) {
         this.userWishlist = userWishlist;
     }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Order> orders;
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
 }
