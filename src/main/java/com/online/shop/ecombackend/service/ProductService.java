@@ -52,6 +52,12 @@ public class ProductService {
     public Page<Product> getProducts(Specification<Product> spec, Pageable pageable) {
         return productRepository.findAll(spec, pageable);
     }
+
+
+
+    public Page<Product> searchProducts(String query, Pageable pageable) {
+        return productRepository.findByNameContainingIgnoreCaseOrBrandnameContainingIgnoreCase(query, query, pageable);
+    }
 }
 
 

@@ -88,4 +88,15 @@ public class ProductController {
 
         return productService.getProducts(spec, pageable);
     }
+    @GetMapping("/search")
+    public List<Product> searchProducts(
+            @RequestParam(defaultValue = "0") int start,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam String s
+    ) {
+         Pageable pageable = PageRequest.of(start / limit, limit);
+        return productService.searchProducts(s, pageable).getContent();
+    }
+
+
 }
