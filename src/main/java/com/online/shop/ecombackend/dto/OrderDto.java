@@ -8,6 +8,7 @@ public class OrderDto {
     private double subtotal;
     private List<CartItemDto> cartItem;
 
+
     public String getUserId() {
         return userId;
     }
@@ -39,4 +40,6 @@ public class OrderDto {
     public void setCartItem(List<CartItemDto> cartItem) {
         this.cartItem = cartItem;
     }
+
+
 }

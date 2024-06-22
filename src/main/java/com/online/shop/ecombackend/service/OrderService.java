@@ -7,6 +7,7 @@ import com.online.shop.ecombackend.dto.CartItemDto;
 import com.online.shop.ecombackend.dto.OrderDto;
 import com.online.shop.ecombackend.model.CartItem;
 import com.online.shop.ecombackend.model.Order;
+import com.online.shop.ecombackend.model.OrderProjection;
 import com.online.shop.ecombackend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,5 +65,9 @@ public class OrderService {
 
         // Fetch orders by user
         return orderRepository.findByUser(user);
+    }
+
+    public List<OrderProjection> getUserIdsFromOrders() {
+        return orderRepository.findUserIdsFromOrders();
     }
 }
