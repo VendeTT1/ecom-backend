@@ -3,7 +3,7 @@ package com.online.shop.ecombackend.dto;
 import com.online.shop.ecombackend.model.Product;
 
 public class CartItemDto {
-    private int productId;
+    private Long productId;
     private String title;
     private String image;
     private int rating;
@@ -13,11 +13,11 @@ public class CartItemDto {
     private String selectedsize;
     private boolean isinwishlist;
 
-    public int getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 

@@ -21,13 +21,13 @@ public class CartItem {
     }
 
     @Column(name = "productId", nullable = false)
-    private int productId;
+    private Long productId;
 
-    public int getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
     @Column(name = "title", nullable = false)

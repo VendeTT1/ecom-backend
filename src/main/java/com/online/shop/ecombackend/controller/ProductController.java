@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -96,6 +97,67 @@ public class ProductController {
     ) {
          Pageable pageable = PageRequest.of(start / limit, limit);
         return productService.searchProducts(s, pageable).getContent();
+    }
+
+    @PutMapping("/{productId}")
+    public ResponseEntity<Product> updateProduct(
+            @PathVariable int productId,
+            @RequestBody Product newProduct) {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isPresent()) {
+            Product existingProduct = optionalProduct.get();
+
+            if (newProduct.getName() != null && !newProduct.getName().isEmpty()) {
+                existingProduct.setName(newProduct.getName());
+            }
+            if (newProduct.getDescription() != null && !newProduct.getDescription().isEmpty()) {
+                existingProduct.setDescription(newProduct.getDescription());
+            }
+            if (newProduct.getIsinstock() != null) {
+                existingProduct.setIsinstock(newProduct.getIsinstock());
+            }
+            if (newProduct.getGender() != null && !newProduct.getGender().isEmpty()) {
+                existingProduct.setGender(newProduct.getGender());
+            }
+            if (newProduct.getCategory() != null && !newProduct.getCategory().isEmpty()) {
+                existingProduct.setCategory(newProduct.getCategory());
+            }
+            if (newProduct.getAvailablesizes() != null && !newProduct.getAvailablesizes().isEmpty()) {
+                existingProduct.setAvailablesizes(newProduct.getAvailablesizes());
+            }
+            if (newProduct.getRating() != null) {
+                existingProduct.setRating(newProduct.getRating());
+            }
+            if (newProduct.getReviews() != null) {
+                existingProduct.setReviews(newProduct.getReviews());
+            }
+            if (newProduct.getTotalreviewcount() != null) {
+                existingProduct.setTotalreviewcount(newProduct.getTotalreviewcount());
+            }
+            if (newProduct.getProductiondate() != null) {
+                existingProduct.setProductiondate(newProduct.getProductiondate());
+            }
+            if (newProduct.getPrice() != null) {
+                existingProduct.setPrice(newProduct.getPrice());
+            }
+            if (newProduct.getBrandname() != null && !newProduct.getBrandname().isEmpty()) {
+                existingProduct.setBrandname(newProduct.getBrandname());
+            }
+            if (newProduct.getProductcode() != null) {
+                existingProduct.setProductcode(newProduct.getProductcode());
+            }
+            if (newProduct.getImageurl() != null && !newProduct.getImageurl().isEmpty()) {
+                existingProduct.setImageurl(newProduct.getImageurl());
+            }
+            if (newProduct.getAdditionalimageurls() != null) {
+                existingProduct.setAdditionalimageurls(newProduct.getAdditionalimageurls());
+            }
+
+            Product updatedProduct = productRepository.save(existingProduct);
+            return ResponseEntity.ok(updatedProduct);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
