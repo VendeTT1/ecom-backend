@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -41,5 +42,38 @@ public class OrderController {
         return orderService.createOrder(orderDTO);
     }
 
+    @PutMapping("/edit/{orderId}")
+    public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBody Order updatedOrder) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
+        Order existingOrder = optionalOrder.get();
+
+        // Update orderstatus if provided, otherwise keep existing value
+        if (updatedOrder.getOrderstatus() != null) {
+            existingOrder.setOrderstatus(updatedOrder.getOrderstatus());
+        }
+
+        // Update subtotal if provided, otherwise keep existing value
+        if (updatedOrder.getSubtotal() != 0.0) {
+            existingOrder.setSubtotal(updatedOrder.getSubtotal());
+        }
+
+        // Update cartItems if provided, otherwise keep existing value
+        if (updatedOrder.getCartItem() != null && !updatedOrder.getCartItem().isEmpty()) {
+            existingOrder.setCartItem(updatedOrder.getCartItem());
+        }
+
+        // Save the updated order
+        Order savedOrder = orderRepository.save(existingOrder);
+        return ResponseEntity.ok(savedOrder);
+    }
+
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId) {
+        orderService.deleteOrderById(orderId);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -69,5 +70,10 @@ public class OrderService {
 
     public List<OrderProjection> getUserIdsFromOrders() {
         return orderRepository.findUserIdsFromOrders();
+    }
+
+    public void deleteOrderById(Long orderId) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        optionalOrder.ifPresent(orderRepository::delete);
     }
 }
