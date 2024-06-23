@@ -4,6 +4,7 @@ import com.online.shop.ecombackend.dao.UserRepository;
 import com.online.shop.ecombackend.exception.UserNotFoundException;
 import com.online.shop.ecombackend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,6 +49,16 @@ public class UserController {
                         user.setAddress(newUser.getAddress());
                     }
                     return userRepository.save(user);
+                }).orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUserById(@PathVariable String id) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    userRepository.delete(user);
+                    return ResponseEntity.ok().build();
                 }).orElseThrow(() -> new UserNotFoundException(id));
     }
 
